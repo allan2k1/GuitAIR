@@ -27,7 +27,14 @@ PVector com2d = new PVector();
 float distancia_mao_corpo;
 float distancia_mao_perna;
 float distancia_mao_cabeca;
+float distancia_mao_direita_cabeca;
 
+boolean palhetada = false;
+
+boolean aux = false;
+
+
+String nota = "";
 
 Minim minim;
 AudioPlayer G, A, D;
@@ -81,6 +88,7 @@ void draw()
     {
       stroke(userClr[ (userList[i] - 1) % userClr.length ] );
       drawSkeleton(userList[i]);
+      getPoints(userList[i]);
     }      
       
     // draw the center of mass
@@ -108,12 +116,14 @@ void draw()
           //do nothing
       }
       else {
-          if (distancia_mao_corpo> 350 && distancia_mao_corpo< 490) {
+          if (palhetada && distancia_mao_corpo> 350 && distancia_mao_corpo< 490) {
               G.pause();
               A.pause();
               D.play(1);
-              println("Acorde de Ré");
+              println("Acorde de Lá");
+              nota = "Lá";
               D.rewind();
+              palhetada = false;
           }
       }
       
@@ -121,12 +131,14 @@ void draw()
           //do nothing
       }
       else {
-          if (distancia_mao_corpo> 500 && distancia_mao_corpo< 640){
+          if (palhetada && distancia_mao_corpo> 500 && distancia_mao_corpo< 640){
               G.pause();
               D.pause();
               A.play(1);
-              println("Acorde de Lá");
+              println("Acorde de Sol");
+              nota = "Sol";
               A.rewind();
+              palhetada = false;
           }
       }
  
@@ -135,30 +147,26 @@ void draw()
           //do nothing
       }
       else {
-          if (distancia_mao_corpo> 650 && distancia_mao_corpo< 800){
+          if (palhetada && distancia_mao_corpo> 650 && distancia_mao_corpo< 800){
               A.pause();
               D.pause();
               G.play(1);
-              println("Acorde de Sol");
+              println("Acorde de Fá");
+              nota = "Fá";
               G.rewind();
+              palhetada = false;
           }
       }
   }
   
 }
 
-// draw the skeleton with the selected joints
-void drawSkeleton(int userId)
-{
-  // to get the 3d joint data
-  /*
-  PVector jointPos = new PVector();
-  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_NECK,jointPos);
-  println(jointPos);
-  */
-  
-  PVector maoEsquerda = new PVector();
+void getPoints(int userId){
+PVector maoEsquerda = new PVector();
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_LEFT_HAND,maoEsquerda);
+  
+  PVector maoDireita = new PVector();
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_RIGHT_HAND,maoDireita);
   
   PVector tronco = new PVector();
   context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_TORSO,tronco);
@@ -171,7 +179,37 @@ void drawSkeleton(int userId)
   
   distancia_mao_corpo= tronco.dist(maoEsquerda);
   distancia_mao_cabeca = cabeca.dist(maoEsquerda);
-  distancia_mao_perna = pernaEsquerda.dist(maoEsquerda);
+  distancia_mao_perna = pernaEsquerda.dist(maoEsquerda);  
+  distancia_mao_direita_cabeca = maoDireita.dist(cabeca);
+  
+  pushMatrix();
+  text("Distância: " + distancia_mao_corpo, 10, 50);
+  text("Nota: " + nota, 10, 65);
+  popMatrix();
+     
+   
+   if(distancia_mao_direita_cabeca >= 400 && distancia_mao_direita_cabeca <= 550){
+       aux = true;
+   }
+   
+   if(aux && distancia_mao_direita_cabeca >= 700){
+       palhetada = true;
+       aux = false;
+   }
+   
+}
+
+// draw the skeleton with the selected joints
+void drawSkeleton(int userId)
+{
+  // to get the 3d joint data
+  /*
+  PVector jointPos = new PVector();
+  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_NECK,jointPos);
+  println(jointPos);
+  */
+  
+  context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_HAND, SimpleOpenNI.SKEL_TORSO);
   
   context.drawLimb(userId, SimpleOpenNI.SKEL_HEAD, SimpleOpenNI.SKEL_NECK);
 
