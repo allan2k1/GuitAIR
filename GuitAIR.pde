@@ -1,14 +1,3 @@
-/* --------------------------------------------------------------------------
- * SimpleOpenNI User Test
- * --------------------------------------------------------------------------
- * Processing Wrapper for the OpenNI/Kinect 2 library
- * http://code.google.com/p/simple-openni
- * --------------------------------------------------------------------------
- * prog:  Max Rheiner / Interaction Design / Zhdk / http://iad.zhdk.ch/
- * date:  12/12/2012 (m/d/y)
- * ----------------------------------------------------------------------------
- */
-
 import SimpleOpenNI.*;
 import ddf.minim.*;
 
@@ -37,7 +26,7 @@ boolean aux = false;
 String nota = "";
 
 Minim minim;
-AudioPlayer G, A, D;
+AudioPlayer G, A, B;
 
 void setup()
 {
@@ -65,9 +54,9 @@ void setup()
  
    // set the sound
   minim = new Minim(this);
-  D = minim.loadFile("D.mp3");
-  A = minim.loadFile("A.mp3");
   G = minim.loadFile("G.mp3");
+  A = minim.loadFile("A.mp3");
+  B = minim.loadFile("B.mp3");
  
 }
 
@@ -112,17 +101,17 @@ void draw()
   
   if(distancia_mao_cabeca > 500 && distancia_mao_perna > 350){
     
-      if (D.isPlaying() == true) {
+      if (B.isPlaying() == true) {
           //do nothing
       }
       else {
           if (palhetada && distancia_mao_corpo> 350 && distancia_mao_corpo< 490) {
               G.pause();
               A.pause();
-              D.play(1);
-              println("Acorde de Lá");
-              nota = "Lá";
-              D.rewind();
+              B.play(1);
+              println("Acorde de Sí");
+              nota = "Sí";
+              B.rewind();
               palhetada = false;
           }
       }
@@ -133,10 +122,10 @@ void draw()
       else {
           if (palhetada && distancia_mao_corpo> 500 && distancia_mao_corpo< 640){
               G.pause();
-              D.pause();
+              B.pause();
               A.play(1);
-              println("Acorde de Sol");
-              nota = "Sol";
+              println("Acorde de Lá");
+              nota = "Lá";
               A.rewind();
               palhetada = false;
           }
@@ -147,12 +136,12 @@ void draw()
           //do nothing
       }
       else {
-          if (palhetada && distancia_mao_corpo> 650 && distancia_mao_corpo< 800){
+          if (palhetada && distancia_mao_corpo> 650 && distancia_mao_corpo< 850){
               A.pause();
-              D.pause();
+              B.pause();
               G.play(1);
-              println("Acorde de Fá");
-              nota = "Fá";
+              println("Acorde de Sol");
+              nota = "Sol";
               G.rewind();
               palhetada = false;
           }
